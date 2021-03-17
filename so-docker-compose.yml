@@ -30,7 +30,7 @@ services:
 ################################################################################
   so-mariadb:
     image: mariadb:10.1.11
-    container_name: mariadb
+    container_name: so-mariadb
     ports:
       - '33062:3306'
     hostname: 'so-mariadb'
@@ -49,7 +49,7 @@ services:
 ################################################################################
   so-catalog-db-adapter:
     image: onap/so-catalog-db-adapter:1.6.4
-    container_name: catalog-db-adapter
+    container_name: so-catalog-db-adapter
     ports:
       - '8082:8082'
     hostname: 'so-catalog-db-adapter'
