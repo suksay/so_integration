@@ -1,0 +1,5 @@
+{
+    "interface-name" : "{{ interface_name }}",
+    "equipment-identifier" : "{{ equip_identifier }}",
+    "in-maint" : "true"
+}

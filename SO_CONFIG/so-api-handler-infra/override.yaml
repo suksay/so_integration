@@ -1,0 +1,140 @@
+#####################################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+######################################################################
+
+aai:
+  endpoint: https://aai-resources:8447
+  auth: 6E081E10B1CA43A843E303733A74D9B23B601A6E22A21C7EF2C7F15A42F81A1A4E85E65268C2661F71321052C7F3E55B96A8E1E951F8BF6F
+server:
+    port: ${CONTAINER_PORT}
+    tomcat:
+        max-threads: 50
+ssl-enable: false
+mso:
+  msoKey: 07a7159d3bf51a0e53be7a8f89699be7
+  logPath: ./logs/apih
+  site-name: mw-manager
+  adapters:
+    requestDb:
+      endpoint: http://so-request-db-adapter:8083
+      auth: Basic YnBlbDpwYXNzd29yZDEk
+  catalog:
+    db:
+      spring:
+        endpoint: http://so-catalog-db-adapter:8082
+  db:
+    auth: Basic YnBlbDpwYXNzd29yZDEk
+  config:
+    path: /src/main/resources/
+  infra:
+    default:
+      alacarte:
+        orchestrationUri: /mso/async/services/ALaCarteOrchestrator
+        recipeTimeout: 180
+        testApi: VNF_API
+      service:
+        macro:
+          default:
+            testApi: GR_API
+  camundaURL: http://so-bpmn-infra:8081/
+  camundaAuth: AE2E9BE6EF9249085AF98689C4EE087736A5500629A72F35068FFB88813A023581DD6E765071F1C04075B36EA4213A
+  async:
+    core-pool-size: 50
+    max-pool-size: 50
+    queue-capacity: 500
+  sdc:
+    client:
+      auth: 878785F4F31BC9CFA5AB52A172008212D8845ED2DE08AD5E56AF114720A4E49768B8F95CDA2EB971765D28EDCDAA24
+    activate:
+      instanceid: test
+      userid: cs0008
+    endpoint: http://sdc-be:8443
+  tenant:
+    isolation:
+      retry:
+        count: 3
+  aai:
+    endpoint: https://aai-resources:8447
+    auth: 6E081E10B1CA43A843E303733A74D9B23B601A6E22A21C7EF2C7F15A42F81A1A4E85E65268C2661F71321052C7F3E55B96A8E1E951F8BF6F
+
+  extApi:
+    endpoint: http://nbi.onap:8080/nbi/api/v3
+  so:
+    operational-environment:
+      dmaap:
+        username: testuser
+        password: VjR5NDcxSzA=
+        host: http://dmaap-bc:8080
+        auth: 51EA5414022D7BE536E7516C4D1A6361416921849B72C0D6FC1C7F262FD9F2BBC2AD124190A332D9845A188AD80955567A4F975C84C221EEA8243BFD92FFE6896CDD1EA16ADD34E1E3D47D4A
+      publisher:
+        topic: com.att.ecomp.mso.operationalEnvironmentEvent
+  health:
+    auth: basic bXNvX2FkbWlufHBhc3N3b3JkMSQ=
+    endpoints:
+      - subsystem: apih
+        uri: http://so-bpmn-infra:8081
+      - subsystem: catalogdb
+        uri: http://so-catalog-db-adapter:8082
+spring:
+  datasource:
+    hikari:
+      jdbcUrl: jdbc:mariadb://${DB_HOST}:${DB_PORT}/catalogdb
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+      pool-name: catdb-pool
+      registerMbeans: true
+  jersey:
+    type: filter
+  security:
+    usercredentials:
+    -
+      username: sitecontrol
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: SiteControl-Client
+    -
+      username: gui
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: GUI-Client
+    -
+      username: infraportal
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: InfraPortal-Client
+    -
+      username: InfraPortalClient
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: InfraPortal-Client
+    -
+      username: bpel
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPEL-Client
+    -
+      username: mso_admin
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: ACTUATOR
+request:
+  datasource:
+    hikari:
+      jdbcUrl: jdbc:mariadb://${DB_HOST}:${DB_PORT}/requestdb
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+      pool-name: reqdb-pool
+      registerMbeans: true
+org:
+  onap:
+    so:
+      cloud-owner: CloudOwner
+      adapters:
+        network:
+          encryptionKey: 07a7159d3bf51a0e53be7a8f89699be7
+

@@ -1,0 +1,8 @@
+{
+    "link-id": "{{link_id}}",
+    "nms-index": "{{nms_index}}",
+    "link-name": "{{link_name}}",
+    "qinq-link-id-a": "{{qinq_link_id_a}}",
+    "qinq-link-id-b": "{{qinq_link_id_b}}",
+    "status": "{{status}}"
+}

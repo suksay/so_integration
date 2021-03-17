@@ -1,0 +1,47 @@
+#####################################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+######################################################################
+
+server:
+    port: ${CONTAINER_PORT}
+    tomcat:
+        max-threads: 50
+ssl-enable: false
+mso:
+  logPath: logs
+  site-name: mw-manager
+  adapters:
+    requestDb:
+      auth: Basic YnBlbDpwYXNzd29yZDEk
+      endpoint: http://so-request-db-adapter:8083
+spring:
+  datasource:
+    hikari:
+      jdbcUrl: jdbc:mariadb://${DB_HOST}:${DB_PORT}/requestdb
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+      pool-name: reqdb-pool
+      registerMbeans: true
+  security:
+    usercredentials:
+    -
+      username: bpel
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPEL-Client
+    -
+      username: mso_admin
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: ACTUATOR
+#Actuator
+management:
+  context-path: /manage

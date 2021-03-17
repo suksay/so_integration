@@ -1,0 +1,87 @@
+#################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+##############################################################
+
+version: '3.3'
+
+networks:
+  #SO Containers Network
+  so_network:
+    external: true
+  #CDS Containers Network
+  cds_network:
+    external: true
+  #AAI Containers Network
+  aai_network:
+    external: true
+
+services:
+##############################################################
+  ccsdk-mariadb:
+    image: mariadb:latest
+    container_name: ccsdk-mariadb
+    ports:
+      - "33061:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sdnctl
+      MYSQL_DATABASE: sdnctl
+      MYSQL_USER: sdnctl
+      MYSQL_PASSWORD: sdnctl
+    networks:
+      - cds_network
+    volumes: 
+      - ./Databases_Persistent_Data/ccsdk-mariadb:/var/lib/mysql
+##############################################################
+  ccsdk-blueprints-processor:
+    depends_on: 
+      - ccsdk-mariadb
+    image: onap/ccsdk-blueprintsprocessor:0.7.5
+    container_name: ccsdk-bp-rest
+    ports:
+      - "8000:8080"
+    restart: always
+    environment:
+      APP_NAME: BlueprintsProcessor
+      BUNDLEVERSION: 1.0.0
+      APP_CONFIG_HOME: /opt/app/onap/config
+      STICKYSELECTORKEY:
+      ENVCONTEXT: dev
+      AAI_ADDRESS: aai-resources
+      AAI_USERNAME: AAI
+      AAI_PASSWORD: AAI
+    volumes: 
+      - ~/deploy:/opt/app/onap/blueprints/deploy/
+      - ./CDS_CONFIG/application.properties:/opt/app/onap/config/application.properties
+    networks:
+      - cds_network
+      - aai_network
+      - so_network
+##############################################################
+  ccsdk-command-executor:
+    depends_on: 
+      - ccsdk-mariadb
+    image: onap/ccsdk-commandexecutor:0.7.5
+    container_name: ccsdk-command-exec
+    environment:
+      AAI_ADDRESS: aai-resources
+      AAI_PASSWORD: AAI
+      AAI_USERNAME: AAI
+    ports:
+      - "50051:50051"
+      - "5555:5555"
+    restart: always
+    volumes: 
+      - ~/deploy:/opt/app/onap/blueprints/deploy/
+    networks:
+      - cds_network
+      - aai_network

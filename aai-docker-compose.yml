@@ -1,0 +1,60 @@
+#################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+##############################################################
+
+version: '3.3'
+
+
+networks:
+  #SO Containers Network
+  so_network:
+    external: true
+  #CDS Containers Network
+  cds_network:
+    external: true
+  #AAI Containers Network
+  aai_network:
+    external: true
+
+
+services:
+##############################################################
+  aai-cassandra:
+    image: cassandra:3.11
+    container_name: aai-cassandra
+    environment:
+      - "CASSANDRA_START_RPC=true"
+    ports:
+      - "9042:9042"
+      - "9160:9160"
+    volumes:
+      - ./Databases_Persistent_Data/aai-cassandra:/var/lib/cassandra
+    networks:
+      - aai_network
+##############################################################
+  aai-resources:
+    depends_on:
+      - aai-cassandra
+    image: onap/aai-resources:1.6.6
+    container_name: aai-resources
+    ports:
+      - "8447:8447"
+    volumes: 
+      - ./AAI_CONFIG/schemas/v19/aai_oxm_v19.xml:/opt/app/aai-resources/resources/schema/onap/oxm/v19/aai_oxm_v19.xml
+      - ./AAI_CONFIG/dbedgerules/v19:/opt/app/aai-resources/resources/schema/onap/dbedgerules/v19/
+      - ./AAI_CONFIG/appprops/janusgraph-realtime.properties:/opt/app/aai-resources/resources/etc/appprops/janusgraph-realtime.properties
+      - ./AAI_CONFIG/appprops/janusgraph-cached.properties:/opt/app/aai-resources/resources/etc/appprops/janusgraph-cached.properties
+    networks:
+      - aai_network
+      - cds_network
+      - so_network    
+

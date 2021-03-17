@@ -1,0 +1,37 @@
+#
+# PySNMP MIB module OPTIX-PKT-QINQLINK-MIB (http://snmplabs.com/pysmi)
+# ASN.1 source file:///usr/share/snmp/mibs/OPTIX-PKT-QINQLINK-MIB.mib
+# Produced by pysmi-0.3.4 at Tue Jun 16 14:59:10 2020
+# On host localhost.localdomain platform Linux version 3.10.0-1127.8.2.el7.x86_64 by user root
+# Using Python version 3.6.8 (default, Apr  2 2020, 13:34:55) 
+#
+
+ObjectIdentifier, OctetString, Integer = mibBuilder.importSymbols("ASN1", "ObjectIdentifier", "OctetString", "Integer")
+NamedValues, = mibBuilder.importSymbols("ASN1-ENUMERATION", "NamedValues")
+ConstraintsIntersection, ConstraintsUnion, SingleValueConstraint, ValueRangeConstraint, ValueSizeConstraint = mibBuilder.importSymbols("ASN1-REFINEMENT", "ConstraintsIntersection", "ConstraintsUnion", "SingleValueConstraint", "ValueRangeConstraint", "ValueSizeConstraint")
+optixProvisionPtn, = mibBuilder.importSymbols("OPTIX-OID-MIB", "optixProvisionPtn")
+ObjectGroup, ModuleCompliance, NotificationGroup = mibBuilder.importSymbols("SNMPv2-CONF", "ObjectGroup", "ModuleCompliance", "NotificationGroup")
+Counter64, ModuleIdentity, Gauge32, MibScalar, MibTable, MibTableRow, MibTableColumn, Bits, Unsigned32, MibIdentifier, Integer32, IpAddress, TimeTicks, ObjectIdentity, iso, Counter32, NotificationType = mibBuilder.importSymbols("SNMPv2-SMI", "Counter64", "ModuleIdentity", "Gauge32", "MibScalar", "MibTable", "MibTableRow", "MibTableColumn", "Bits", "Unsigned32", "MibIdentifier", "Integer32", "IpAddress", "TimeTicks", "ObjectIdentity", "iso", "Counter32", "NotificationType")
+RowStatus, DisplayString, TextualConvention = mibBuilder.importSymbols("SNMPv2-TC", "RowStatus", "DisplayString", "TextualConvention")
+optixQinqLink = ModuleIdentity((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12))
+optixQinqLink.setRevisions(('2012-11-15 13:53',))
+if mibBuilder.loadTexts: optixQinqLink.setLastUpdated('201211151353Z')
+if mibBuilder.loadTexts: optixQinqLink.setOrganization('Huawei Technologies co.,Ltd.')
+optixQinqLinkGroup = MibIdentifier((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1))
+optixQinqLinkTable = MibTable((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1), )
+if mibBuilder.loadTexts: optixQinqLinkTable.setStatus('current')
+optixQinqLinkEntry = MibTableRow((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1), ).setIndexNames((0, "OPTIX-PKT-QINQLINK-MIB", "optixQinqLinkIndex"))
+if mibBuilder.loadTexts: optixQinqLinkEntry.setStatus('current')
+optixQinqLinkIndex = MibTableColumn((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1, 1), Unsigned32())
+if mibBuilder.loadTexts: optixQinqLinkIndex.setStatus('current')
+optixQinqLinkBoardId = MibTableColumn((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1, 2), Unsigned32()).setMaxAccess("readcreate")
+if mibBuilder.loadTexts: optixQinqLinkBoardId.setStatus('current')
+optixQinqLinkSubBdId = MibTableColumn((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1, 3), Unsigned32()).setMaxAccess("readcreate")
+if mibBuilder.loadTexts: optixQinqLinkSubBdId.setStatus('current')
+optixQinqLinkPortId = MibTableColumn((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1, 4), Unsigned32()).setMaxAccess("readcreate")
+if mibBuilder.loadTexts: optixQinqLinkPortId.setStatus('current')
+optixQinqLinkVlanId = MibTableColumn((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1, 5), Unsigned32()).setMaxAccess("readcreate")
+if mibBuilder.loadTexts: optixQinqLinkVlanId.setStatus('current')
+optixQinqLinkRowStatus = MibTableColumn((1, 3, 6, 1, 4, 1, 2011, 2, 25, 4, 50, 12, 1, 1, 1, 255), RowStatus()).setMaxAccess("readcreate")
+if mibBuilder.loadTexts: optixQinqLinkRowStatus.setStatus('current')
+mibBuilder.exportSymbols("OPTIX-PKT-QINQLINK-MIB", optixQinqLinkPortId=optixQinqLinkPortId, optixQinqLinkRowStatus=optixQinqLinkRowStatus, PYSNMP_MODULE_ID=optixQinqLink, optixQinqLinkVlanId=optixQinqLinkVlanId, optixQinqLinkSubBdId=optixQinqLinkSubBdId, optixQinqLinkEntry=optixQinqLinkEntry, optixQinqLinkBoardId=optixQinqLinkBoardId, optixQinqLinkIndex=optixQinqLinkIndex, optixQinqLinkGroup=optixQinqLinkGroup, optixQinqLink=optixQinqLink, optixQinqLinkTable=optixQinqLinkTable)

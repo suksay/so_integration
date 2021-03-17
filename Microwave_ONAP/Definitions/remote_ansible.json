@@ -1,0 +1,544 @@
+{
+	"tosca_definitions_version": "controller_blueprint_1_0_0",
+	"metadata": {
+		"template_author": "TGI OLN",
+		"author-email": "silasmanasse.monney@orange.com",
+		"user-groups": "ADMIN, OPERATION",
+		"template_name": "remote_ansible",
+		"template_version": "1.0.0",
+		"template_tags": "tosca"
+	},
+	"imports": [
+		{
+			"file": "Definitions/data_types.json"
+		},
+		{
+			"file": "Definitions/relationship_types.json"
+		},
+		{
+			"file": "Definitions/artifact_types.json"
+		},
+		{
+			"file": "Definitions/node_types.json"
+		},
+		{
+			"file": "Definitions/policy_types.json"
+		}
+	],
+	"topology_template": {
+		"workflows": {
+			"network-discovery": {
+				"steps": {
+					"get_address": {
+						"description": "Discover SNMP Devices on network",
+						"target": "get_address",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"set_lldp"
+						]
+					},
+					"set_lldp": {
+						"description": "Enable LLDP on interface",
+						"target": "set_lldp",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"get_infos"
+						]
+					},
+					"get_infos": {
+						"description": "Retrieve LLDP and L2 configuration",
+						"target": "get_infos",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						]
+					},
+					"make_graph": {
+						"description": "Activate gui web server",
+						"target": "make_graph",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						]
+					}
+				},
+				"outputs": {
+					"execute-command-logs": {
+						"required": false,
+						"type": "string",
+						"entry_schema": {
+							"type": "string"
+						},
+						"value": {
+							"get_attribute": [
+								"get_infos",
+								"execute-command-logs"
+							]
+						}
+					}
+				}
+			},
+			"init-project": {
+				"steps": {
+					"create_microwaves_models": {
+						"description": "Create Microwaves Model in AAI Database",
+						"target": "create_microwaves_models",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"gui"
+						]
+					},
+					"gui": {
+						"description": "Activate gui web server",
+						"target": "gui",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"gui"
+						]
+					}
+				},
+				"outputs": {
+					"execute-command-logs": {
+						"required": false,
+						"type": "string",
+						"entry_schema": {
+							"type": "string"
+						},
+						"value": {
+							"get_attribute": [
+								"gui",
+								"execute-command-logs"
+							]
+						}
+					}
+				}
+			},
+			"path-finding": {
+				"steps": {
+					"get_paths": {
+						"description": "Finding available paths",
+						"target": "get_paths",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"configure_path"
+						]
+					}
+				},
+				"inputs": {
+					"python-args": {
+						"required": false,
+						"type": "json"
+					}
+				},
+				"outputs": {
+					"execute-command-logs": {
+						"required": false,
+						"type": "json",
+						"entry_schema": {
+							"type": "json"
+						},
+						"value": {
+							"get_attribute": [
+								"get_paths",
+								"execute-command-logs"
+							]
+						}
+					}
+				}
+			},
+			"config-path": {
+				"steps": {
+					"get_paths": {
+						"description": "Finding available paths",
+						"target": "get_paths",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"configure_path"
+						]
+					},
+					"configure_path": {
+						"description": "Configuring path",
+						"target": "configure_path",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						],
+						"on_success": [
+							"get_infos"
+						]
+					},
+					"get_infos": {
+						"description": "Configuring path",
+						"target": "configure_path",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						]
+					}
+				},
+				"inputs": {
+					"python-args": {
+						"required": false,
+						"type": "json"
+					}
+				},
+				"outputs": {
+					"execute-command-logs": {
+						"required": false,
+						"type": "json",
+						"entry_schema": {
+							"type": "json"
+						},
+						"value": {
+							"get_attribute": [
+								"configure_path",
+								"execute-command-logs"
+							]
+						}
+					}
+				}
+			},
+			"refresh-all": {
+				"steps": {
+					"make_graph": {
+						"description": "Activate gui web server",
+						"target": "make_graph",
+						"activities": [
+							{
+								"call_operation": ""
+							}
+						]
+					}
+				},
+				"outputs": {
+					"execute-command-logs": {
+						"required": false,
+						"type": "json",
+						"entry_schema": {
+							"type": "json"
+						},
+						"value": {
+							"get_attribute": [
+								"make_graph",
+								"execute-command-logs"
+							]
+						}
+					}
+				}
+			}
+		},
+		"node_templates": {
+			"create_microwaves_models": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python aai_init.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"requests",
+												"jinja2"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/aai_init.py"
+					}
+				}
+			},
+			"gui": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python gui.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/gui.py"
+					}
+				}
+			},
+			"make_graph": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python make_graph.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/make_graph.py"
+					}
+				}
+			},
+			"get_paths": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python path_finding.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									],
+									"dynamic-properties": {
+										"get_input": "python-args"
+									}
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/path_finding.py"
+					}
+				}
+			},
+			"configure_path": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python configure_path.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									],
+									"dynamic-properties": {
+										"get_input": "python-args"
+									}
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/configure_path.py"
+					}
+				}
+			},
+			"get_address": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python get_address.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/get_address.py"
+					}
+				}
+			},
+			"get_infos": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python get_infos.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/get_infos.py"
+					}
+				}
+			},
+			"set_lldp": {
+				"type": "component-remote-python-executor",
+				"interfaces": {
+					"ComponentRemotePythonExecutor": {
+						"operations": {
+							"process": {
+								"implementation": {
+									"primary": "component-script"
+								},
+								"inputs": {
+									"command": "python set_lldp_port_on.py",
+									"packages": [
+										{
+											"type": "pip",
+											"package": [
+												"pysnmp",
+												"pysnmp-mibs",
+												"flask",
+												"json2html",
+												"jinja2"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"artifacts": {
+					"component-script": {
+						"type": "artifact-script-python",
+						"file": "Scripts/python/snmp/set_lldp_port_on.py"
+					}
+				}
+			}
+		}
+	}
+}

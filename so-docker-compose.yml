@@ -1,0 +1,240 @@
+#####################################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+######################################################################
+
+version: '3.3'
+
+
+networks:
+  #SO Containers Network
+  so_network:
+    external: true
+  #CDS Containers Network
+  cds_network:
+    external: true
+  #AAI Containers Network
+  aai_network:
+    external: true
+
+
+services:
+################################################################################
+  so-mariadb:
+    image: mariadb:10.1.11
+    container_name: mariadb
+    ports:
+      - '33062:3306'
+    hostname: 'so-mariadb'
+    networks:
+      - so_network
+    volumes:
+      - './SO_CONFIG/so-mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
+      - './SO_CONFIG/so-mariadb/conf.d:/etc/mysql/conf.d'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=password'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '30m'
+        max-file: '5'
+################################################################################
+  so-catalog-db-adapter:
+    image: onap/so-catalog-db-adapter:1.6.4
+    container_name: catalog-db-adapter
+    ports:
+      - '8082:8082'
+    hostname: 'so-catalog-db-adapter'
+    networks:
+      - so_network
+    volumes:
+      - './SO_CONFIG/so-catalog-db-adapter:/app/config'
+    environment:
+      - 'APP=so-catalog-db-adapter'
+      - 'CONTAINER_PORT=8082'
+      - 'COMMON_NAMESPACE=local.onap.org'
+      - 'JVM_ARGS=-Xms64m -Xmx512m'
+      - 'DB_HOST=so-mariadb'
+      - 'DB_PORT=3306'
+      - 'DB_USERNAME=so_user'
+      - 'DB_PASSWORD=so_User123'
+      - 'DB_ADMIN_USERNAME=so_admin'
+      - 'DB_ADMIN_PASSWORD=so_Admin123'
+      - 'EXIT_DELAY=1800'
+    depends_on:
+      - 'so-mariadb'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '30m'
+        max-file: '5'
+    command:
+      - '/app/wait-for.sh'
+      - '-q'
+      - '-t'
+      - '300'
+      - 'so-mariadb:3306'
+      - '--'
+      - '/app/start-app.sh'
+################################################################################
+  so-request-db-adapter:
+    image: onap/so-request-db-adapter:1.6.4
+    container_name: so-request-db-adapter
+    ports:
+      - '8083:8083'
+    hostname: 'so-request-db-adapter'
+    networks:
+      - so_network
+    volumes:
+      - './SO_CONFIG/so-request-db-adapter:/app/config'
+    environment:
+      - 'APP=so-request-db-adapter'
+      - 'CONTAINER_PORT=8083'
+      - 'COMMON_NAMESPACE=local.onap.org'
+      - 'JVM_ARGS=-Xms64m -Xmx512m'
+      - 'DB_HOST=so-mariadb'
+      - 'DB_PORT=3306'
+      - 'DB_USERNAME=so_user'
+      - 'DB_PASSWORD=so_User123'
+      - 'DB_ADMIN_USERNAME=so_admin'
+      - 'DB_ADMIN_PASSWORD=so_Admin123'
+      - 'EXIT_DELAY=1800'
+    depends_on:
+      - 'so-mariadb'
+      - 'so-catalog-db-adapter'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '30m'
+        max-file: '5'
+    command:
+      - '/app/wait-for.sh'
+      - '-q'
+      - '-t'
+      - '300'
+      - 'so-catalog-db-adapter:8082'
+      - '--'
+      - '/app/start-app.sh'
+################################################################################
+  so-bpmn-infra:
+    image: onap/so-bpmn-infra:1.6.4
+    container_name: so-bpmn-infra
+    ports:
+      - '8081:8081'
+    hostname: 'so-bpmn-infra'
+    networks:
+      - so_network
+      - aai_network
+      - cds_network
+    volumes:
+      - './SO_CONFIG/so-bpmn-infra:/app/config'
+    environment:
+      - 'APP=so-bpmn-infra'
+      - 'CONTAINER_PORT=8081'
+      - 'COMMON_NAMESPACE=local.onap.org'
+      - 'JVM_ARGS=-Xms64m -Xmx512m'
+      - 'DB_HOST=so-mariadb'
+      - 'DB_PORT=3306'
+      - 'DB_USERNAME=so_user'
+      - 'DB_PASSWORD=so_User123'
+      - 'DB_ADMIN_USERNAME=so_admin'
+      - 'DB_ADMIN_PASSWORD=so_Admin123'
+      - 'EXIT_DELAY=1800'
+    depends_on:
+      - 'so-mariadb'
+      - 'so-catalog-db-adapter'
+      - 'so-request-db-adapter'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '30m'
+        max-file: '5'
+    command:
+      - '/app/wait-for.sh'
+      - '-q'
+      - '-t'
+      - '300'
+      - 'so-request-db-adapter:8083'
+      - '--'
+      - '/app/start-app.sh'
+################################################################################
+  so-api-handler-infra:
+    image: onap/so-api-handler-infra:1.6.4
+    container_name: so-api-handler-infra
+    ports:
+      - '8080:8080'
+    hostname: 'so-api-handler-infra'
+    networks:
+      - so_network
+      - aai_network
+    volumes:
+      - './SO_CONFIG/so-api-handler-infra:/app/config'
+    environment:
+      - 'APP=so-api-handler-infra'
+      - 'CONTAINER_PORT=8080'
+      - 'COMMON_NAMESPACE=local.onap.org'
+      - 'JVM_ARGS=-Xms64m -Xmx512m'
+      - 'DB_HOST=so-mariadb'
+      - 'DB_PORT=3306'
+      - 'DB_USERNAME=so_user'
+      - 'DB_PASSWORD=so_User123'
+      - 'EXIT_DELAY=1800'
+    depends_on:
+      - 'so-mariadb'
+      - 'so-catalog-db-adapter'
+      - 'so-request-db-adapter'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '30m'
+        max-file: '5'
+    command:
+      - '/app/wait-for.sh'
+      - '-q'
+      - '-t'
+      - '300'
+      - 'so-request-db-adapter:8083'
+      - '--'
+      - '/app/start-app.sh'
+################################################################################
+  so-monitoring:
+    image: onap/so-so-monitoring:1.6.4
+    container_name: so-monitoring
+    ports:
+      - '8088:8088'
+    hostname: 'so-monitoring'
+    networks:
+      - so_network
+    volumes:
+      - './SO_CONFIG/so-so-monitoring:/app/config'
+    environment:
+      - 'APP=so-so-monitoring'
+      - 'CONTAINER_PORT=8088'
+      - 'COMMON_NAMESPACE=local.onap.org'
+      - 'JVM_ARGS=-Xms64m -Xmx512m'
+      - 'EXIT_DELAY=1800'
+    depends_on:
+      - 'so-mariadb'
+      - 'so-catalog-db-adapter'
+      - 'so-request-db-adapter'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '30m'
+        max-file: '5'
+    command:
+      - '/app/wait-for.sh'
+      - '-q'
+      - '-t'
+      - '300'
+      - 'so-request-db-adapter:8083'
+      - '--'
+      - '/app/start-app.sh'

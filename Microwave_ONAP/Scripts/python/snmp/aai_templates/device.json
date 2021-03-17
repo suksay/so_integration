@@ -1,0 +1,10 @@
+{
+    "device-id" : "{{ device_id }}",
+    "device-name" : "{{ device_name }}",
+    "vendor" : "{{ vendor }}",
+    "system-ipv4" : "{{ ipv4 }}",
+    "description" : "{{ description }}",
+    "model-customization-id" : "{{ ne_id }}",
+    "model-invariant-id" : "{{ model_invariant_id }}",
+    "model-version-id" : "{{ model_version_id }}"
+}

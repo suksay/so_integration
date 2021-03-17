@@ -1,0 +1,196 @@
+{
+    "paths": [
+        {
+            "nodes": {
+                "0x346ac25f1b5c": {
+                    "links": [
+                        {
+                            "local_int_index": 11,
+                            "local_intf": "1/255/4",
+                            "neighbor": "0x8cdf9d6602d0",
+                            "neighbor_intf": "Ethernet_0/1"
+                        }
+                    ]
+                },
+                "0x8cdf9d6602d0": {
+                    "links": [
+                        {
+                            "local_int_index": 41,
+                            "local_intf": "Modem-1",
+                            "neighbor": "0x8cdf9dbc1120",
+                            "neighbor_intf": "Modem-1"
+                        }
+                    ]
+                },
+                "0x8cdf9dbc1120": {
+                    "links": [
+                        {
+                            "local_int_index": 142671872,
+                            "local_intf": "Ethernet_0/1",
+                            "neighbor": "0x346ac21d93b9",
+                            "neighbor_intf": "1/255/3"
+                        }
+                    ]
+                },
+                "0x346ac21d93b9": {
+                    "links": [
+                        {
+                            "local_int_index": 12,
+                            "local_intf": "1/255/3",
+                            "neighbor": "0x8cdf9dbc1120",
+                            "neighbor_intf": "Ethernet_0/1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "nodes": {
+                "0x346ac25f1b5c": {
+                    "links": [
+                        {
+                            "local_int_index": 11,
+                            "local_intf": "1/255/4",
+                            "neighbor": "0x8cdf9d6602d0",
+                            "neighbor_intf": "Ethernet_0/1"
+                        }
+                    ]
+                },
+                "0x8cdf9d6602d0": {
+                    "links": [
+                        {
+                            "local_int_index": 142737408,
+                            "local_intf": "Ethernet_0/2",
+                            "neighbor": "0x346ac21d93b9",
+                            "neighbor_intf": "1/255/4"
+                        }
+                    ]
+                },
+                "0x346ac21d93b9": {
+                    "links": [
+                        {
+                            "local_int_index": 11,
+                            "local_intf": "1/255/4",
+                            "neighbor": "0x8cdf9d6602d0",
+                            "neighbor_intf": "Ethernet_0/2"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "nodes": {
+                "0x346ac25f1b5c": {
+                    "links": [
+                        {
+                            "local_int_index": 12,
+                            "local_intf": "1/255/5",
+                            "neighbor": "0x8cdf9dbc1120",
+                            "neighbor_intf": "Ethernet_0/2"
+                        }
+                    ]
+                },
+                "0x8cdf9dbc1120": {
+                    "links": [
+                        {
+                            "local_int_index": 41,
+                            "local_intf": "Modem-1",
+                            "neighbor": "0x8cdf9d6602d0",
+                            "neighbor_intf": "Modem-1"
+                        }
+                    ]
+                },
+                "0x8cdf9d6602d0": {
+                    "links": [
+                        {
+                            "local_int_index": 142737408,
+                            "local_intf": "Ethernet_0/2",
+                            "neighbor": "0x346ac21d93b9",
+                            "neighbor_intf": "1/255/4"
+                        }
+                    ]
+                },
+                "0x346ac21d93b9": {
+                    "links": [
+                        {
+                            "local_int_index": 11,
+                            "local_intf": "1/255/4",
+                            "neighbor": "0x8cdf9d6602d0",
+                            "neighbor_intf": "Ethernet_0/2"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "nodes": {
+                "0x346ac25f1b5c": {
+                    "links": [
+                        {
+                            "local_int_index": 12,
+                            "local_intf": "1/255/5",
+                            "neighbor": "0x8cdf9dbc1120",
+                            "neighbor_intf": "Ethernet_0/2"
+                        }
+                    ]
+                },
+                "0x8cdf9dbc1120": {
+                    "links": [
+                        {
+                            "local_int_index": 142671872,
+                            "local_intf": "Ethernet_0/1",
+                            "neighbor": "0x346ac21d93b9",
+                            "neighbor_intf": "1/255/3"
+                        }
+                    ]
+                },
+                "0x346ac21d93b9": {
+                    "links": [
+                        {
+                            "local_int_index": 12,
+                            "local_intf": "1/255/3",
+                            "neighbor": "0x8cdf9dbc1120",
+                            "neighbor_intf": "Ethernet_0/1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "nodes": {
+                "0x346ac25f1b5c": {
+                    "links": [
+                        {
+                            "local_int_index": 1,
+                            "local_intf": "3/255/1",
+                            "neighbor": "0x346ac21d93b9",
+                            "neighbor_intf": "3/255/1"
+                        },
+                        {
+                            "local_int_index": 2,
+                            "local_intf": "4/255/1",
+                            "neighbor": "0x346ac21d93b9",
+                            "neighbor_intf": "4/255/1"
+                        }
+                    ]
+                },
+                "0x346ac21d93b9": {
+                    "links": [
+                        {
+                            "local_int_index": 1,
+                            "local_intf": "3/255/1",
+                            "neighbor": "0x346ac25f1b5c",
+                            "neighbor_intf": "3/255/1"
+                        },
+                        {
+                            "local_int_index": 2,
+                            "local_intf": "4/255/1",
+                            "neighbor": "0x346ac25f1b5c",
+                            "neighbor_intf": "4/255/1"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "vlan-interface": "{{ vlan_id }}",
+    "vlan-description": "{{ vlan_mode }}",
+    "in-maint": true,
+    "is-ip-unnumbered": false,
+    "is-private": true
+}

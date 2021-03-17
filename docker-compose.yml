@@ -1,0 +1,100 @@
+version: '3.3'
+
+services:
+    #MariaDb
+    db:
+        image: mariadb:latest
+        container_name: ccsdk-mariadb
+        networks:
+          - cds_network
+        ports:
+          - "3306:3306"
+        restart: always
+        environment:
+          MYSQL_ROOT_PASSWORD: sdnctl
+          MYSQL_DATABASE: sdnctl
+          MYSQL_USER: sdnctl
+          MYSQL_PASSWORD: sdnctl
+    
+    #Blueprint Processor
+    blueprints-processor:
+        depends_on: 
+            - db
+        build:
+          context: .
+          dockerfile: bp_init
+        container_name: bp-rest
+        ports:
+        - "8000:8080"
+        restart: always
+        environment:
+            APP_NAME: BlueprintsProcessor
+            BUNDLEVERSION: 1.0.0
+            APP_CONFIG_HOME: /opt/app/onap/config
+            STICKYSELECTORKEY:
+            ENVCONTEXT: dev
+            AAI_ADDRESS: aai-resources
+            AAI_USERNAME: AAI
+            AAI_PASSWORD: AAI
+        volumes: 
+            - ~/deploy:/opt/app/onap/blueprints/deploy/
+        networks:
+            - cds_network
+            - storage_network
+
+    #Command Executor       
+    command-executor:
+        depends_on: 
+            - db
+        image: onap/ccsdk-commandexecutor:0.7.5
+        container_name: command-exec
+        environment:
+            AAI_ADDRESS: aai-resources
+            AAI_PASSWORD: AAI
+            AAI_USERNAME: AAI
+        ports:
+            - "50051:50051"
+            - "5555:5555"
+        restart: always
+        volumes: 
+            -  ~/deploy:/opt/app/onap/blueprints/deploy/
+        networks:
+            - cds_network
+            - storage_network
+
+    #AAI Resources
+    aai-resources:
+        depends_on:
+            - aai-cassandra
+        image: onap/aai-resources:1.6.6
+        container_name: aai-resources
+        ports:
+            - "8447:8447"
+        volumes: 
+            - ./AAI_CONFIG/schemas/v19/aai_oxm_v19.xml:/opt/app/aai-resources/resources/schema/onap/oxm/v19/aai_oxm_v19.xml
+            - ./AAI_CONFIG/dbedgerules/v19:/opt/app/aai-resources/resources/schema/onap/dbedgerules/v19/
+            - ./AAI_CONFIG/appprops/janusgraph-realtime.properties:/opt/app/aai-resources/resources/etc/appprops/janusgraph-realtime.properties
+            - ./AAI_CONFIG/appprops/janusgraph-cached.properties:/opt/app/aai-resources/resources/etc/appprops/janusgraph-cached.properties
+        networks:
+            - cds_network
+            - storage_network    
+
+    #Cassandra
+    aai-cassandra:
+        image: cassandra:3.11
+        container_name: aai-cassandra
+        environment:
+            - "CASSANDRA_START_RPC=true"
+        ports:
+            - "9042:9042"
+            - "9160:9160"
+        volumes:
+            -  ~/AAI_FILES/STORAGE_SPACE:/var/lib/cassandra
+        networks:
+            - storage_network
+ 
+networks: 
+    cds_network:
+        driver: bridge
+    storage_network:
+        driver: bridge

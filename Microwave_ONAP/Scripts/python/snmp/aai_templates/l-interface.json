@@ -1,0 +1,9 @@
+{
+    "interface-name": "{{ interface_id }}",
+    "interface-id": "{{ interface_name }}",
+    "is-port-mirrored": false,
+    "in-maint": true,
+    "is-ip-unnumbered": false,
+    "l2-multicasting": false,
+    "admin-status": "up"
+}

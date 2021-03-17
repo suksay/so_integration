@@ -1,0 +1,4 @@
+{
+    "model-invariant-id" : "{{ model_invariant_id }}",
+    "model-type" : "{{ model_type }}"
+}

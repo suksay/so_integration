@@ -1,0 +1,30 @@
+#####################################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+######################################################################
+
+server:
+  port: ${CONTAINER_PORT}
+  tomcat:
+    max-threads: 50
+ssl-enable: false
+camunda:
+  rest:
+    api:
+      url: http://bpmn-infra.${COMMON_NAMESPACE}:8081/sobpmnengine/engine/
+      engine: default
+      auth: Basic YXBpaEJwbW46cGFzc3dvcmQxJA==
+mso:
+  database:
+    rest:
+      api:
+        url: http://request-db-adapter.${COMMON_NAMESPACE}:8083/infraActiveRequests/
+        auth: Basic YnBlbDpwYXNzd29yZDEk

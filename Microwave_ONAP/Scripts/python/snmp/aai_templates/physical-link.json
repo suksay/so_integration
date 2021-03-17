@@ -1,0 +1,48 @@
+{
+    "link-name": "{{ link_name }}",
+    "relationship-list": {
+        "relationship": [
+          {
+            "related-to": "p-interface",
+            "relationship-label": "tosca.relationships.network.LinksTo",
+            "related-link": "/aai/v20/network/pnfs/pnf/{{ device_A_id }}/p-interfaces/p-interface/{{ device_A_interf_name }}",
+            "relationship-data": [
+              {
+                "relationship-key": "pnf.pnf-name",
+                "relationship-value": "{{ device_A_id }}"
+              },
+              {
+                "relationship-key": "p-interface.interface-name",
+                "relationship-value": "{{ device_A_interf_name }}"
+              }
+            ],
+            "related-to-property": [
+              {
+                "property-key": "p-interface.prov-status"
+              }
+            ]
+          },
+          {
+            "related-to": "p-interface",
+            "relationship-label": "tosca.relationships.network.LinksTo",
+            "related-link": "/aai/v20/network/pnfs/pnf/{{ device_B_id }}/p-interfaces/p-interface/{{ device_B_interf_name }}",
+            "relationship-data": [
+              {
+                "relationship-key": "pnf.pnf-name",
+                "relationship-value": "{{ device_B_id }}"
+              },
+              {
+                "relationship-key": "p-interface.interface-name",
+                "relationship-value": "{{ device_B_interf_name }}"
+              }
+            ],
+            "related-to-property": [
+              {
+                "property-key": "p-interface.prov-status"
+              }
+            ]
+          }
+        ]
+      }
+
+  }

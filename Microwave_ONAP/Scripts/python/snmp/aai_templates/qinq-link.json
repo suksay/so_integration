@@ -1,0 +1,6 @@
+{
+    "qinq-link-id": "{{qinq_link_id}}",
+    "port-name": "{{port_name}}",
+    "qinq-vlan-id": "{{qinq_vlan_id}}",
+    "status": "{{status}}"
+}

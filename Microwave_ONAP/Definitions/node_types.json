@@ -1,0 +1,76 @@
+{
+  "node_types" : {
+    "component-remote-python-executor" : 
+    {
+      "description": "This is Remote Python Execution Component.",
+      "version": "1.0.0",
+      "attributes": {
+        "prepare-environment-logs": {
+          "required": false,
+          "type": "string"
+        },
+        "execute-command-logs": {
+          "required": false,
+          "type": "json",
+          "entry_schema": {
+            "type": "json"
+          }
+        },
+        "response-data": {
+          "required": false,
+          "type": "json"
+        }
+      },
+      "capabilities": {
+        "component-node": {
+          "type": "tosca.capabilities.Node"
+        }
+      },
+      "interfaces": {
+        "ComponentRemotePythonExecutor": {
+          "operations": {
+            "process": {
+              "inputs": {
+                "endpoint-selector": {
+                  "description": "Remote Container or Server selector name.",
+                  "required": false,
+                  "type": "string",
+                  "default": "remote-python"
+                },
+                "dynamic-properties": {
+                  "description": "Dynamic Json Content or DSL Json reference.",
+                  "required": false,
+                  "type": "json"
+                },
+                "argument-properties": {
+                  "description": "Argument Json Content or DSL Json reference.",
+                  "required": false,
+                  "type": "json"
+                },
+                "command": {
+                  "description": "Command to execute.",
+                  "required": true,
+                  "type": "string"
+                },
+                "packages": {
+                  "description": "Packages to install based on type.",
+                  "required": false,
+                  "type" : "list",
+                  "entry_schema" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "derived_from": "tosca.nodes.Component"
+    },
+    "tosca.nodes.Component" : {
+      "description" : "This is default Component Node",
+      "version" : "1.0.0",
+      "derived_from" : "tosca.nodes.Root"
+    }
+  }
+}

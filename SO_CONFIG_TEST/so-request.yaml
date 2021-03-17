@@ -1,0 +1,55 @@
+
+#copyright © 2018 AT&T USA
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# will be used as entry in DB to say SITE OFF/ON for healthcheck
+server:
+    port: ${CONTAINER_PORT}
+    tomcat:
+        max-threads: 50
+ssl-enable: false
+mso:
+  logPath: logs
+  site-name: localSite
+  adapters:
+    requestDb:
+      auth: Basic YnBlbDpwYXNzd29yZDEk
+      endpoint: http://request-db-adapter.${COMMON_NAMESPACE}:8083
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/requestdb
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+      pool-name: reqdb-pool
+      registerMbeans: true
+  security:
+    usercredentials:
+    -
+      username: bpel
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPEL-Client
+    -
+      username: mso_admin
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: ACTUATOR
+
+
+#Actuator
+management:
+  endpoints:
+    web:
+      base-path: /manage
+      exposure:
+        include: "*"

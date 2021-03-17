@@ -1,0 +1,12 @@
+{
+    "pnf-name" : "{{ device_id }}",
+    "pnf-name2" : "{{ device_name }}",
+    "selflink" : "{{ selflink }}",
+    "equip-type" : "{{ equip_type }}",
+    "equip-vendor" : "{{ vendor }}",
+    "in-maint" :"true",
+    "model-customization-id" : "",
+    "model-invariant-id" : "{{ model_invariant_id }}",
+    "model-version-id" : "{{ model_version_id }}"
+
+}

@@ -1,0 +1,381 @@
+#####################################################################
+# Software Name : MW Automation Project
+# Version: 1.2.0
+# SPDX-FileCopyrightText: Copyright (c) 2021 Orange
+#
+# This software is confidential and proprietary information of Orange.
+# You shall not disclose such Confidential Information and shall not copy, use or distribute it
+# in whole or in part without the prior written consent of Orange
+#
+# Author: Silas Monney <silasmanasse.monney@orange.com>, ORANGE/TGI/OLN/RNM/ARMS/MTS
+# Software description: Automate microwave equipments management 
+######################################################################
+
+aai:
+  auth: 6E081E10B1CA43A843E303733A74D9B23B601A6E22A21C7EF2C7F15A42F81A1A4E85E65268C2661F71321052C7F3E55B96A8E1E951F8BF6F
+  dme2:
+    timeout: '30000'
+  endpoint: https://aai-resources:8447
+  workflowAaiDistributionDelay: PT30S
+  pnfEntryNotificationTimeout: P14D
+cds:
+  endpoint: ccsdk-bp-rest
+  port: 8080
+  auth: Basic Y2NzZGthcHBzOmNjc2RrYXBwcw==
+  timeout: 600
+camunda:
+  bpm:
+    admin-user:
+      id: admin
+      password: admin
+    history-level: full
+    job-execution:
+      max-pool-size: 30
+      core-pool-size: 3
+entitymanager:
+  packagesToScan: com
+pnf:
+  dmaap:
+    host: message-router
+    port: 3904
+    protocol: http
+    uriPathPrefix: events
+    topicName: unauthenticated.PNF_READY
+    consumerGroup: consumerGroup
+    consumerId: consumerId
+    topicListenerDelayInSeconds: 5
+bpelURL: http://so-bpmn-infra:8081
+msb-ip: msb-iag
+msb-port: 80
+mso:
+  rainyDay:
+    retryDurationMultiplier: 2
+    maxRetries: 5
+  msoKey: 07a7159d3bf51a0e53be7a8f89699be7
+  correlation:
+    timeout: 60
+  logPath: logs
+  async:
+    core-pool-size: 50
+    max-pool-size: 50
+    queue-capacity: 500
+  adapters:
+    completemsoprocess:
+      endpoint: http://so-openstack-adapter:8087/CompleteMsoProcess
+    requestDb:
+      endpoint: http://so-request-db-adapter:8083
+      auth: Basic YnBlbDpwYXNzd29yZDEk
+    db:
+      auth: 33293332AEC4930F655D8E2E8BB08937
+      password: wLg4sjrAFUS8rfVfdvTXeQ==
+      endpoint: http://so-request-db-adapter:8083/services/RequestsDbAdapter
+      spring:
+        endpoint: http://so-request-db-adapter:8083
+    network:
+      endpoint: http://so-openstack-adapter:8087/services/NetworkAdapter
+      rest:
+        endpoint: http://so-openstack-adapter:8087/services/rest/v1/networks
+    openecomp:
+      db:
+        endpoint: http://so-request-db-adapter:8083/services/RequestsDbAdapter
+    po:
+      auth: 33293332AEC4930F655D8E2E8BB08937
+    sdnc:
+      endpoint: http://so-sdnc-adapter:8086/adapters/SDNCAdapter
+      rest:
+        endpoint: http://so-sdnc-adapter:8086/adapters/rest/v1/sdnc
+      timeout: PT60M
+    tenant:
+      endpoint: http://so-openstack-adapter:8087/services/TenantAdapter
+    vnf:
+      endpoint: http://so-openstack-adapter:8087/services/VnfAdapter
+      rest:
+        endpoint: http://so-openstack-adapter:8087/services/rest/v1/vnfs
+    volume-groups:
+      rest:
+        endpoint: http://so-openstack-adapter:8087/services/rest/v1/volume-groups
+    vnf-async:
+      endpoint: http://so-openstack-adapter:8087/services/VnfAsync
+    vfc:
+      rest:
+        endpoint: http://so-vfc-adapter:8084/services/v1/vfcadapter
+    workflow:
+      message:
+        endpoint: http://so-bpmn-infra:8081/mso/WorkflowMessage
+    nssmf:
+      endpoint: http://so-nssmf-adapter:8088
+  bpmn:
+    process:
+      historyTimeToLive: '30'
+  callbackRetryAttempts: '5'
+  catalog:
+    db:
+      endpoint: http://so-catalog-db-adapter:8082/ecomp/mso/catalog
+      spring:
+        endpoint: http://so-catalog-db-adapter:8082
+  db:
+    auth: Basic YnBlbDpwYXNzd29yZDEk
+  default:
+    adapter:
+      namespace: http://org.onap.mso
+  healthcheck:
+    log:
+      debug: 'false'
+  infra:
+    endpoint:
+      url: http://so:8080/onap/so/infra
+    customer:
+      id: testCustIdInfra
+  po:
+    timeout: PT60M
+  request:
+    db:
+      endpoint: http://so-request-db-adapter:8083/
+  rollback: 'true'
+  sdnc:
+    password: {{ .Values.mso.sdnc.password }}
+  service:
+    agnostic:
+      sniro:
+        endpoint: /sniro/api/v2/placement
+        host: http://sniro-emulator:80
+  site-name: CamundaEngine
+  sniro:
+    auth: test:testpwd
+    callback: http://so-openstack-adapter:8087/adapters/rest/SDNCNotify
+    endpoint: http://replaceme:28090/optimizationInstance/V1/create
+    timeout: PT30M
+  oof:
+    auth: test:testpwd
+    callbackEndpoint: http://bpmn-infra.${COMMON_NAMESPACE}:8081/mso/WorkflowMessage
+    endpoint: http://oof-osdf.${COMMON_NAMESPACE}:8698/api/oof/v1/placement
+    timeout: PT30M
+  workflow:
+    CreateGenericVNFV1:
+      aai:
+        volume-group:
+          uri: /aai/v6/cloud-infrastructure/volume-groups/volume-group
+    default:
+      aai:
+        version: '14'
+        cloud-region:
+          version: '14'
+        generic-vnf:
+          version: '14'
+        v14:
+          customer:
+            uri: /aai/v14/business/customers/customer
+          generic-query:
+            uri: /aai/v14/search/generic-query
+          generic-vnf:
+            uri: /aai/v14/network/generic-vnfs/generic-vnf
+          l3-network:
+            uri: /aai/v14/network/l3-networks/l3-network
+          network-policy:
+            uri: /aai/v14/network/network-policies/network-policy
+          nodes-query:
+            uri: /aai/v14/search/nodes-query
+          route-table-reference:
+            uri: /aai/v14/network/route-table-references/route-table-reference
+          tenant:
+            uri: /aai/v14/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/tenants/tenant
+          vce:
+            uri: /aai/v14/network/vces/vce
+          vpn-binding:
+            uri: /aai/v14/network/vpn-bindings/vpn-binding
+          sp-partner:
+            uri: /aai/v14/business/sp-partners/sp-partner
+          device:
+            uri: /aai/v14/network/devices/device
+        v11:
+          customer:
+            uri: /aai/v11/business/customers/customer
+          generic-query:
+            uri: /aai/v11/search/generic-query
+          generic-vnf:
+            uri: /aai/v11/network/generic-vnfs/generic-vnf
+          l3-network:
+            uri: /aai/v11/network/l3-networks/l3-network
+          network-policy:
+            uri: /aai/v11/network/network-policies/network-policy
+          nodes-query:
+            uri: /aai/v11/search/nodes-query
+          route-table-reference:
+            uri: /aai/v11/network/route-table-references/route-table-reference
+          tenant:
+            uri: /aai/v11/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/tenants/tenant
+          vce:
+            uri: /aai/v11/network/vces/vce
+          vpn-binding:
+            uri: /aai/v11/network/vpn-bindings/vpn-binding
+        v8:
+          configuration:
+            uri: /aai/v11/network/configurations/configuration
+          customer:
+            uri: /aai/v8/business/customers/customer
+          generic-query:
+            uri: /aai/v8/search/generic-query
+          l3-network:
+            uri: /aai/v8/network/l3-networks/l3-network
+          network-policy:
+            uri: /aai/v8/network/network-policies/network-policy
+          nodes-query:
+            uri: /aai/v8/search/nodes-query
+          route-table-reference:
+            uri: /aai/v8/network/route-table-references/route-table-reference
+          tenant:
+            uri: /aai/v8/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/tenants/tenant
+          vce:
+            uri: /aai/v8/network/vces/vce
+          vpn-binding:
+            uri: /aai/v8/network/vpn-bindings/vpn-binding
+        v9:
+          cloud-region:
+            uri: /aai/v9/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner
+          generic-vnf:
+            uri: /aai/v9/network/generic-vnfs/generic-vnf
+      retry:
+        attempts: '1'
+    deleteCinderVolumeV1:
+      aai:
+        volume-group:
+          uri: /aai/v6/cloud-infrastructure/volume-groups/volume-group
+    global:
+      default:
+        aai:
+          namespace: http://org.onap.aai.inventory/
+          version: 14
+    message:
+      endpoint: http://so-bpmn-infra:8081/mso/WorkflowMessage
+    notification:
+      name: GenericNotificationServiceATT
+    sdnc:
+      replication:
+        delay: PT60S
+    sdncadapter:
+      callback: http://so-bpmn-infra:8081/mso/SDNCAdapterCallbackService
+    vnfadapter:
+      create:
+        callback: http://so-bpmn-infra:8081/mso/vnfAdapterNotify
+      delete:
+        callback: http://so-bpmn-infra:8081/mso/vnfAdapterNotify
+      query:
+        callback: http://so-bpmn-infra:8081/mso/vnfAdapterNotify
+      rollback:
+        callback: http://so-bpmn-infra:8081/mso/vnfAdapterNotify
+  use:
+    qualified:
+      host: false
+  global:
+    dmaap:
+      username: testuser
+      password: alRyMzJ3NUNeakxl
+      host: http://10.42.111.36:904
+      publisher:
+        topic: replaceme
+  naming:
+    endpoint: http://naming.demo.onap.com:8081/web/service/v1/genNetworkElementName
+    auth: Basic bTA0NzY4QG5vbi1wcm9kLm1zby5lY29tcC5hdHQuY29tOkF0dG0wNDc2OExpZmUhQA==
+policy:
+  auth: Basic dGVzdHBkcDphbHBoYTEyMw==
+  default:
+    disposition: Skip
+  client:
+    auth: Basic bTAzNzQzOnBvbGljeVIwY2sk
+  endpoint: http://pdp:8081/pdp/api/
+  environment: TEST
+sdnc:
+  auth: Basic YWRtaW46S3A4Yko0U1hzek0wV1hsaGFrM2VIbGNzZTJnQXc4NHZhb0dHbUp2VXkyVQ==
+  host: http://sdnc:8282
+  path: /restconf/operations/GENERIC-RESOURCE-API
+  si:
+    svc:
+      types: PORT-MIRROR,PPROBE
+  dmaap:
+    host: http://message-router:3904
+    timeout: 30000
+  lcm:
+    path: '/restconf/operations/LCM:'
+    actionTimeout: 300000
+    dmapp:
+      readTopic: SDNC-LCM-WRITE
+      writeTopic: SDNC-LCM-READ
+appc:
+  client:
+    topic:
+      read:
+        name: APPC-LCM-WRITE
+        timeout: 360000
+      write: APPC-LCM-READ
+      sdnc:
+        read: SDNC-LCM-WRITE
+        write: SDNC-LCM-READ
+    response:
+      timeout: 360000
+    key: VIlbtVl6YLhNUrtU
+    secret: 64AG2hF4pYeG2pq7CT6XwUOT
+    service: ueb
+    poolMembers: message-router:3904,message-router:3904
+sniro:
+  conductor:
+    enabled: true
+    host: http://sniro-emulator:80
+    uri: /v1/release-orders
+    headers.auth: Basic dGVzdDp0ZXN0cHdk
+  manager:
+    timeout: PT30M
+    host: http://sniro-emulator:80
+    uri.v1: /sniro/api/v2/placement
+    uri.v2: /sniro/api/placement/v2
+    headers.auth: Basic dGVzdDp0ZXN0cHdk
+    headers.patchVersion: 1
+    headers.minorVersion: 1
+    headers.latestVersion: 2
+server:
+  port: ${CONTAINER_PORT}
+  tomcat:
+    max-threads: 50
+spring:
+  datasource:
+    hikari:
+      jdbcUrl: jdbc:mariadb://${DB_HOST}:${DB_PORT}/camundabpmn
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+      pool-name: bpmn-pool
+      registerMbeans: true
+  security:
+    usercredentials:
+    -
+      username: apihBpmn
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPMN-Client
+    -
+      username: sdncaBpmn
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPMN-Client
+    -
+      username: poBpmn
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPMN-Client
+    -
+      username: wmaBpmn
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: BPMN-Client
+    -
+      username: sniro
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: SNIRO-Client
+    -
+      username: mso_admin
+      password: '$2a$10$Fh9ffgPw2vnmsghsRD3ZauBL1aKXebigbq3BB1RPWtE62UDILsjke'
+      role: ACTUATOR
+so:
+  vnfm:
+    adapter:
+      url: https://so-vnfm-adapter:9092/so/vnfm-adapter/v1/
+      auth: Basic YnBlbDpwYXNzd29yZDEk
+org:
+  onap:
+    so:
+      cloud-owner: CloudOwner

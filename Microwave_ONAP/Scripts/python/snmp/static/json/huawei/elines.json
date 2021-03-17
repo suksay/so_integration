@@ -1,0 +1,188 @@
+{
+    "0x346ac21d93b9": {
+        "uni2nni": {
+            "1.1.1": {
+                "nms_index": "1",
+                "name": "SNMP E-LINE build",
+                "port": "1/255/1",
+                "vlan_list": [
+                    "1002"
+                ],
+                "qinqid": "18",
+                "status": "active"
+            },
+            "2.1.1": {
+                "nms_index": "2",
+                "name": "07/03/2020,12:44:40",
+                "port": "1/255/2",
+                "vlan_list": [
+                    "12"
+                ],
+                "qinqid": "16",
+                "status": "active"
+            },
+            "3.1.1": {
+                "nms_index": "3",
+                "name": "07/20/2020,11:11:17",
+                "port": "1/255/3",
+                "vlan_list": [
+                    "888"
+                ],
+                "qinqid": "17",
+                "status": "active"
+            },
+            "4.1.1": {
+                "nms_index": "4",
+                "name": "SNMP E-LINE build 2",
+                "port": "1/255/1",
+                "vlan_list": [
+                    "1003"
+                ],
+                "qinqid": "19",
+                "status": "active"
+            },
+            "5.1.1": {
+                "nms_index": "5",
+                "name": "950-1-REN-950-2-REN-E-Line-00022",
+                "port": "1/255/4",
+                "vlan_list": [
+                    "5"
+                ],
+                "qinqid": "20",
+                "status": "active"
+            },
+            "6.1.1": {
+                "nms_index": "200",
+                "name": "Bla",
+                "port": "1/255/1",
+                "vlan_list": [
+                    "20"
+                ],
+                "qinqid": "89",
+                "status": "active"
+            }
+        },
+        "uni2uni": {},
+        "nni2nni": {}
+    },
+    "0x346ac25f1b5c": {
+        "uni2nni": {
+            "2.1.1": {
+                "nms_index": "2",
+                "name": "07/03/2020,12:44:40",
+                "port": "1/255/2",
+                "vlan_list": [
+                    "12"
+                ],
+                "qinqid": "15",
+                "status": "active"
+            },
+            "3.1.1": {
+                "nms_index": "3",
+                "name": "SNMP E-LINE build",
+                "port": "1/255/1",
+                "vlan_list": [
+                    "1002"
+                ],
+                "qinqid": "17",
+                "status": "active"
+            },
+            "7.1.1": {
+                "nms_index": "7",
+                "name": "07/20/2020,11:11:17",
+                "port": "1/255/6",
+                "vlan_list": [
+                    "888"
+                ],
+                "qinqid": "16",
+                "status": "active"
+            },
+            "8.1.1": {
+                "nms_index": "8",
+                "name": "SNMP E-LINE build 2",
+                "port": "1/255/1",
+                "vlan_list": [
+                    "1003"
+                ],
+                "qinqid": "18",
+                "status": "active"
+            },
+            "9.1.1": {
+                "nms_index": "9",
+                "name": "950-1-REN-950-2-REN-E-Line-00022",
+                "port": "1/255/4",
+                "vlan_list": [
+                    "5"
+                ],
+                "qinqid": "19",
+                "status": "active"
+            }
+        },
+        "uni2uni": {
+            "1.1.2": {
+                "nms_index": "1",
+                "name": "07/01/2020,05:34:49",
+                "port_a": "1/255/2",
+                "vlan_list_a": [
+                    "69"
+                ],
+                "port_b": "1/255/4",
+                "vlan_list_b": [
+                    "69"
+                ],
+                "status": "active"
+            },
+            "4.1.2": {
+                "nms_index": "4",
+                "name": "07/06/2020,15:09:43",
+                "port_a": "1/255/6",
+                "vlan_list_a": [
+                    "788"
+                ],
+                "port_b": "1/255/5",
+                "vlan_list_b": [
+                    "788"
+                ],
+                "status": "active"
+            },
+            "5.1.2": {
+                "nms_index": "5",
+                "name": "07/06/2020,16:03:07",
+                "port_a": "1/255/6",
+                "vlan_list_a": [
+                    "789"
+                ],
+                "port_b": "1/255/5",
+                "vlan_list_b": [
+                    "789"
+                ],
+                "status": "active"
+            },
+            "6.1.2": {
+                "nms_index": "6",
+                "name": "07/08/2020,13:15:57",
+                "port_a": "1/255/6",
+                "vlan_list_a": [
+                    "999"
+                ],
+                "port_b": "1/255/4",
+                "vlan_list_b": [
+                    "999"
+                ],
+                "status": "active"
+            }
+        },
+        "nni2nni": {}
+    },
+    "0x2c9d1e5d81a9": {
+        "uni2nni": {},
+        "uni2uni": {},
+        "nni2nni": {}
+    },
+    "0x2c9d1e5ada05": {
+        "uni2nni": {},
+        "uni2uni": {},
+        "nni2nni": {}
+    }
+}
+

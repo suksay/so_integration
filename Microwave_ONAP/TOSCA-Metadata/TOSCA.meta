@@ -1,0 +1,7 @@
+TOSCA-Meta-File-Version: 1.0.0
+CSAR-Version: 1.0
+Created-By: Nathan Decaux <nathan.decaux@orange.com>, Silas Monney <silasmanasse.monney@orange.com>
+Entry-Definitions: Definitions/remote_ansible.json
+Template-Tags: nso, juniper, remote_ansible
+Template-Name: mw-manager
+Template-Version: 1.0.0

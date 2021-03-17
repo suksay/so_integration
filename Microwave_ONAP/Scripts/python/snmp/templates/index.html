@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<header>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <clientCache cacheControlMode="DisableCache" />
+  <meta charset="utf-8">
+</header>
+<!-- <link rel='stylesheet' href='static/style.css' type='text/css' media='all' /> -->
+<link rel="stylesheet" href="static/javascript/bootstrap.min.css">
+<script src="static/javascript/jquery-3.2.1.slim.min.js"></script>
+<script src="static/javascript/popper.min.js"></script>
+<script src="static/javascript/bootstrap.min.js"></script>
+<script src="static/javascript/jquery-3.5.1.js"></script>
+<script defer src="static/javascript/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="static/javascript/jquery.dataTables.min.css">
+
+<body>
+  <style>
+    div.loading-invisible {
+      display: none;
+    }
+
+    div.loading-visible {
+      display: block;
+    }
+  </style>
+  <div id="loading" class="loading-invisible">
+    <img src="static/img/loading.gif" width="150" height="150" alt="" />
+  </div>
+  <div class="container-fluid">
+    <div class="row" id="inventory"></div>
+    <div class="row">
+      <div class="form-group">
+        <label for="device_a">Device-A ID :</label><br>
+        <input class="form-control" type="text" id="device_a" name="device_a"><br></div>
+      <div class="form-group">
+        <label for="interface_a">Interface-A:</label><br>
+        <input class="form-control" type="text" id="interface_a"><br></div>
+      <div class="form-group">
+        <label for="device_b">Device-B ID :</label><br>
+        <input class="form-control" type="text" id="device_b" name="device_b"><br></div>
+      <div class="form-group">
+        <label for="interface_b">Interface-B:</label><br>
+        <input class="form-control" type="text" id="interface_b"><br></div>
+      <div class="form-group">
+        <label for="vlan">VLAN</label><br>
+        <input class="form-control" type="text" id="vlan"><br></div>
+      <div class="form-group">
+        <label for="Path Length">Path Number (check Paths Viewer)</label><br>
+        <input class="form-control" type="text" id="path_number"><br></div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-primary" onClick="Update()">Update</button>
+        <button class="btn btn-primary" onClick="Discovery()">Discovery</button>
+        <button class="btn btn-primary" onClick="PathFinding()">Path Finding</button>
+        <a href="/paths_view">Paths Viewer</a>
+      </div>
+      <div class="col">
+        <button class="btn btn-secondary" onClick="ConfigPath()">Configure Path</button>
+      </div>
+    </div>
+    <br>
+
+    <div class="row">
+      <div class="col">
+        <svg width=50% height=50%></svg>
+      </div>
+
+      <div class="col">
+        <div class="container-fluid">
+          <div class="card">
+            <button class="card-header" data-toggle="collapse" data-target="#infobox">Neighborship</button>
+            <div class="card-body" id="infobox"></div>
+          </div>
+          <div class="card">
+            <button class="card-header" data-toggle="collapse" data-target="#infobox2">QinQLinks</button>
+            <div class="card-body" id="infobox2"></div>
+          </div>
+          <div class="card">
+            <button class="card-header" data-toggle="collapse" data-target="#infobox3">Uni2Nni</button>
+            <div class="card-body" id="infobox3"></div>
+          </div>
+          <div class="card">
+            <button class="card-header" data-toggle="collapse" data-target="#infobox4">Uni2Uni</button>
+            <div class="card-body" id="infobox4"></div>
+          </div>
+          <div class="card">
+            <button class="card-header" data-toggle="collapse" data-target="#infobox5">NEC Vlans Config</button>
+            <div class="card-body" id="infobox5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+<script src="static/javascript/d3.v4.min.js"></script>
+<script type="text/javascript" src="static/javascript/jquery.min.js"></script>
+
+<script>
+
+  function discovery_request() {
+    var data = JSON.stringify({ "actionIdentifiers": { "mode": "sync", "blueprintName": "mw-manager", "blueprintVersion": "1.0.0", "actionName": "network-discovery" }, "payload": { "network-discovery-request": {} }, "commonHeader": { "subRequestId": "143748f9-3cd5-4910-81c9-a4601ff2ea58", "requestId": "e5eb1f1e-3386-435d-b290-d49d8af8db4c", "originatorId": "SDNC_DG" } });
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        alert(this.responseText);
+        document.getElementById("loading").className = "loading-invisible";
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+      }
+    });
+
+    xhr.open("POST", "http://172.20.189.242:8000/api/v1/execution-service/process");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Basic Y2NzZGthcHBzOmNjc2RrYXBwcw==");
+
+    xhr.send(data);
+  }
+
+  function path_finding_request() {
+    var device_a = (document.getElementById('device_a').value)
+    var device_b = (document.getElementById('device_b').value)
+    var data = JSON.stringify({ "actionIdentifiers": { "mode": "sync", "blueprintName": "mw-manager", "blueprintVersion": "1.0.0", "actionName": "path-finding" }, "payload": { "path-finding-request": { "python-args": { "device_a": device_a, "device_b": device_b } } }, "commonHeader": { "subRequestId": "143748f9-3cd5-4910-81c9-a4601ff2ea58", "requestId": "e5eb1f1e-3386-435d-b290-d49d8af8db4c", "originatorId": "SDNC_DG" } });
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        alert(this.responseText);
+        document.getElementById("loading").className = "loading-invisible";
+      }
+    });
+
+    xhr.open("POST", "http://172.20.189.242:8000/api/v1/execution-service/process");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Basic Y2NzZGthcHBzOmNjc2RrYXBwcw==");
+
+    xhr.send(data);
+  }
+
+  function refresh_gui() {
+    var data = JSON.stringify({ "actionIdentifiers": { "mode": "sync", "blueprintName": "mw-manager", "blueprintVersion": "1.0.0", "actionName": "refresh-all" }, "payload": { "refresh-all-request": {} }, "commonHeader": { "subRequestId": "143748f9-3cd5-4910-81c9-a4601ff2ea58", "requestId": "e5eb1f1e-3386-435d-b290-d49d8af8db4c", "originatorId": "SDNC_DG" } });
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        alert(this.responseText);
+        document.getElementById("loading").className = "loading-invisible";
+        localStorage.clear();
+        sessionStorage.clear();
+        d3.selectAll().remove();
+        window.location.reload();
+      }
+    });
+
+    xhr.open("POST", "http://172.20.189.242:8000/api/v1/execution-service/process");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Basic Y2NzZGthcHBzOmNjc2RrYXBwcw==");
+
+    xhr.send(data);
+
+  }
+
+
+  function config_path_request() {
+    var device_a = (document.getElementById('device_a').value)
+    var device_b = (document.getElementById('device_b').value)
+    var interface_a = (document.getElementById('interface_a').value)
+    var interface_b = (document.getElementById('interface_b').value)
+    var vlan = (document.getElementById('vlan').value)
+    var path_number = (document.getElementById('path_number').value)
+    var data = JSON.stringify({ "actionIdentifiers": { "mode": "sync", "blueprintName": "mw-manager", "blueprintVersion": "1.0.0", "actionName": "config-path" }, "payload": { "config-path-request": { "python-args": { "device_a": device_a, "interface_a": interface_a, "device_b": device_b, "interface_b": interface_b, "vlan": vlan, "path_number": path_number } } }, "commonHeader": { "subRequestId": "143748f9-3cd5-4910-81c9-a4601ff2ea58", "requestId": "e5eb1f1e-3386-435d-b290-d49d8af8db4c", "originatorId": "SDNC_DG" } });
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        alert(this.responseText);
+        document.getElementById("loading").className = "loading-invisible";
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+      }
+    });
+    xhr.open("POST", "http://172.20.189.242:8000/api/v1/execution-service/process");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", "Basic Y2NzZGthcHBzOmNjc2RrYXBwcw==");
+    xhr.send(data);
+  }
+
+
+
+
+  function Update() {
+    document.getElementById("loading").className = "loading-visible";
+    setTimeout(function () {
+      refresh_gui();
+    }, 0);
+  }
+
+  function Discovery() {
+    document.getElementById("loading").className = "loading-visible";
+    setTimeout(function () {
+      discovery_request();
+    }, 0);
+  }
+
+  function PathFinding() {
+    document.getElementById("loading").className = "loading-visible";
+    setTimeout(function () {
+      path_finding_request();
+    }, 0);
+  }
+
+  function ConfigPath() {
+    document.getElementById("loading").className = "loading-visible";
+    setTimeout(function () {
+      config_path_request();
+    }, 0);
+  }
+  // =============================
+  // PRINTING DEVICE DETAILS TABLE
+  // =============================
+
+  // ====================
+  // READING OF JSON FILE 
+  // ====================
+  function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, true);
+    rawFile.setRequestHeader("Cache-Control", "no-cache");
+    rawFile.setRequestHeader("Pragma", "no-cache");
+    rawFile.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+    rawFile.onreadystatechange = function () {
+      if (rawFile.readyState === 4 && rawFile.status == "200") {
+        callback(rawFile.responseText);
+      }
+    }
+    rawFile.send(null);
+  }
+
+  function OnClickDetails(deviceid) {
+    //alert("devicedetails: " + deviceid);
+    //usage:
+
+    readTextFile("static/json/inventory.json", function (text) {
+      var data = JSON.parse(text);
+      // console.log(data); 
+      // console.log(deviceid);
+
+      bFoundMatch = 0;
+      for (var key in data) {
+        // console.log("Key: " + key + " vs " + deviceid);
+
+        if ((deviceid.localeCompare(key)) == 0) {
+          // console.log("match!");
+          bFoundMatch = 1;
+          text = tableFromInventory(key, data);
+
+          printToDivWithID("inventory", "<h2>Device : <u>" + key + "</u></h2>" + text);
+        }
+      }
+      if (!(bFoundMatch)) {
+        warning_text = "<h4>The selected device id: ";
+        warning_text += deviceid;
+        warning_text += " is not in database!</h4>";
+        warning_text += "This is most probably as you clicked on edge node ";
+        warning_text += "that is not NETCONF data gathered, try clicking on its neighbors.";
+        printToDivWithID("infobox", warning_text);
+      }
+    });
+
+    // #############################
+    // # READING NEIGHBORS         #
+    // #############################  
+    readTextFile("static/json/neighborships.json", function (text) {
+      var data = JSON.parse(text);
+      // console.log(data); 
+      // console.log(deviceid);
+
+      bFoundMatch = 0;
+      for (var key in data) {
+        // console.log("Key: " + key + " vs " + deviceid);
+
+        if ((deviceid.localeCompare(key)) == 0) {
+          // console.log("match!");
+          bFoundMatch = 1;
+          text = tableFromNeighbor(key, data);
+
+          printToDivWithID("infobox", "<br>" + text);
+        }
+      }
+      if (!(bFoundMatch)) {
+        warning_text = "<h4>The selected device id: ";
+        warning_text += deviceid;
+        warning_text += " is not in database!</h4>";
+        warning_text += "This is most probably as you clicked on edge node ";
+        warning_text += "that is not NETCONF data gathered, try clicking on its neighbors.";
+        printToDivWithID("infobox", warning_text);
+      }
+    });
+
+    // ####################################
+    // # READING Huawei QINQLINKS #
+    // ####################################
+    readTextFile("static/json/huawei/qinqlinks.json", function (text) {
+      var data = JSON.parse(text);
+      // console.log(data); 
+      // console.log(deviceid);
+
+      bFoundMatch = 0;
+      for (var key in data) {
+        // console.log("Key: " + key + " vs " + deviceid);
+
+        if ((deviceid.localeCompare(key)) == 0) {
+          // console.log("match!");
+          bFoundMatch = 1;
+          text = tableFromQinQ(key, data);
+          printToDivWithID("infobox2", "<br>" + text);
+        }
+      }
+      if (!(bFoundMatch)) {
+        printToDivWithID("infobox2", "");
+      }
+
+    });
+
+    readTextFile("static/json/nec/vlans.json", function (text) {
+      var data = JSON.parse(text);
+      // console.log(data); 
+      // console.log(deviceid);
+
+      bFoundMatch = 0;
+      for (var key in data) {
+        // console.log("Key: " + key + " vs " + deviceid);
+
+        if ((deviceid.localeCompare(key)) == 0) {
+          // console.log("match!");
+          bFoundMatch = 1;
+          text = tableFromVlansNec(key, data);
+          printToDivWithID("infobox5", "<br>" + text);
+        }
+      }
+      if (!(bFoundMatch)) {
+        printToDivWithID("infobox5", "");
+      }
+    });
+
+
+
+    // ####################################
+    // # READING Huawei QINQLINKS #
+    // ####################################
+    readTextFile("static/json/huawei/elines.json", function (text) {
+      var data = JSON.parse(text);
+      // console.log(data); 
+      // console.log(deviceid);
+
+      bFoundMatch = 0;
+      for (var key in data) {
+        // console.log("Key: " + key + " vs " + deviceid);
+
+        if ((deviceid.localeCompare(key)) == 0) {
+          // console.log("match!");
+          bFoundMatch = 1;
+          text_uni2nni = tableFromUni2Nni(key, data);
+          text_uni2uni = tableFromUni2Uni(key, data);
+          printToDivWithID("infobox3", "<br>" + text_uni2nni);
+          printToDivWithID("infobox4", "<br>" + text_uni2uni);
+
+        }
+      }
+      if (!(bFoundMatch)) {
+        printToDivWithID("infobox3", "");
+        printToDivWithID("infobox4", "");
+
+      }
+    });
+
+  }
+  // ####################################
+  // # using input parameters returns 
+  // # HTML table with these inputs
+  // ####################################
+  function tableFromInventory(key, data) {
+    text = "<table id=\"inventory\" class=\"table table-striped\">";
+    text += "<thead><th><u><h4>Address</h4></u></th><th><u><h4>Hostname</h4></u></th><th><u><h4>Vendor</h4></u></th>";
+    text += "</thead>";
+    text += "<tr>";
+    text += "<td>" + data[key]['address'] + "</td>";
+    text += "<td>" + data[key]['hostname'] + "</td>";
+    text += "<td>" + data[key]['vendor'] + "</td>";
+    text += "</tr>";
+    text += "</table>";
+
+    return text;
+  }
+  function tableFromNeighbor(key, data) {
+    text = "<table id=\"neighborship\" class=\"table table-striped\">";
+    text += "<thead><th><u><h4>LOCAL INT.</h4></u></th><th><u><h4>NEIGHBOR</h4></u></th><th><u><h4>NEIGHBOR'S INT</h4></u></th>";
+    text += "</thead>";
+
+    for (var neighbor in data[key]) {
+      text += "<tr>";
+
+      // // console.log("local_intf:" + data[key][neighbor]['local_intf']);
+      text += "<td>" + data[key][neighbor]['local_intf'] + "</td>";
+      // // console.log("neighbor_intf:" + data[key][neighbor]['neighbor_intf']);
+      text += "<td>" + data[key][neighbor]['neighbor'] + "</td>";
+      // // console.log("neighbor:" + data[key][neighbor]['neighbor']);
+      text += "<td>" + data[key][neighbor]['neighbor_intf'] + "</td>";
+
+      text += "</tr>";
+    }
+
+    text += "</table>";
+
+    return text;
+  }
+
+  function tableFromQinQ(key, data) {
+    // text+= "<thead><th><u><h4>QinQLink ID</h4></u></th><th><u><h4>Interface</h4></u></th><th><u><h4>VLAN</h4></u></th>";
+    // text+= "</thead>";
+
+    text = "<table class=\"table table-striped\">";
+    text += "<thead><tr><th><u><h4>QinQLink ID</h4></u></th><th><u><h4>Interface</h4></u></th><th><u><h4>VLAN</h4></u></tr></th>";
+    text += "</thead>";
+    for (var id in data[key]) {
+      text += "<tr>"
+      // // console.log("local_intf:" + data[key][neighbor]['local_intf']);
+      text += "<td>" + id + "</td>";
+      // // console.log("neighbor_intf:" + data[key][neighbor]['neighbor_intf']);
+      text += "<td>" + data[key][id]['port'] + "</td>";
+      // // console.log("neighbor:" + data[key][neighbor]['neighbor']);
+      text += "<td>" + data[key][id]['vlan'] + "</td>";
+      text += "</tr>"
+    }
+    text += "</table>";
+
+
+    return text;
+  }
+
+  function tableFromVlansNec(key, data) {
+    text = "<table class=\"table table-striped\">";
+    text += "<thead><th><u><h4>Interface</h4></u></th><th><u><h4>VLAN</h4></u></th><th><u><h4>Mode</h4></u></th>";
+    text += "</thead>";
+    for (var idx in data[key]['config']) {
+      config = data[key]['config'][idx]
+      text += "<tr>";
+      text += "<td>" + config['port_name'] + "</td>";
+      text += "<td>" + config['vlan'] + "</td>";
+      text += "<td>" + config['mode'] + "</td>";
+      text += "</tr>";
+    }
+
+    text += "</table>";
+
+    return text;
+  }
+
+
+  function tableFromUni2Nni(key, data) {
+    text = "<table class=\"table table-striped\">";
+    text += "<thead><th><u><h4>ID</h4></u></th><th><u><h4>NMS Index</h4></u></th><th><u><h4>Name</h4></u></th>";
+    text += "<th><u><h4>Interface</h4></u></th><th><u><h4>Vlan List</h4></u></th><th><u><h4>QinQ Id</h4></u></th>"
+    text += "</thead>";
+    console.log(data[key])
+    for (var id in data[key]['uni2nni']) {
+
+      text += "<tr>";
+      text += "<td>" + id + "</td>";
+      text += "<td>" + data[key]['uni2nni'][id]['nms_index'] + "</td>";
+      text += "<td>" + data[key]['uni2nni'][id]['name'] + "</td>";
+      text += "<td>" + data[key]['uni2nni'][id]['port'] + "</td>";
+      text += "<td>" + data[key]['uni2nni'][id]['vlan_list'] + "</td>";
+      text += "<td>" + data[key]['uni2nni'][id]['qinqid'] + "</td>";
+      text += "</tr>";
+    }
+
+    text += "</table>";
+
+    return text;
+  }
+  // "uni2uni": {
+  //             "1.1.2": {
+  //                 "nms_index": "1",
+  //                 "name": "07/01/2020,05:34:49",
+  //                 "port_a": "1/255/2",
+  //                 "vlan_list_a": [
+  //                     "69"
+  //                 ],
+  //                 "port_b": "1/255/3",
+  //                 "vlan_list_b": [
+  //                     "69"
+  //                 ],
+  //                 "status": "active"
+  //             }
+  //         }
+  function tableFromUni2Uni(key, data) {
+    text = "<table class=\"table table-striped\">";
+    text += "<thead><th><u><h4>ID</h4></u></th><th><u><h4>NMS Index</h4></u></th><th><u><h4>Name</h4></u></th>";
+    text += "<th><u><h4>Interface-A</h4></u></th><th><u><h4>Vlan List A</h4></u></th>"
+    text += "<th><u><h4>Interface-B</h4></u></th><th><u><h4>Vlan List B</h4></u></th>"
+    text += "</thead>";
+
+    for (var id in data[key]['uni2uni']) {
+      text += "<tr>";
+
+      text += "<td>" + id + "</td>";
+      text += "<td>" + data[key]['uni2uni'][id]['nms_index'] + "</td>";
+      text += "<td>" + data[key]['uni2uni'][id]['name'] + "</td>";
+      text += "<td>" + data[key]['uni2uni'][id]['port_a'] + "</td>";
+      text += "<td>" + data[key]['uni2uni'][id]['vlan_list_a'] + "</td>";
+      text += "<td>" + data[key]['uni2uni'][id]['port_b'] + "</td>";
+      text += "<td>" + data[key]['uni2uni'][id]['vlan_list_b'] + "</td>";
+      text += "</tr>";
+    }
+
+    text += "</table>";
+
+    return text;
+  }
+
+  function tableFromNni2Nni(key, data) {
+    text = "<table class=\"table table-striped\">";
+    text += "<thead><th><u><h4>QinQLink ID</h4></u></th><th><u><h4>Interface</h4></u></th><th><u><h4>VLAN</h4></u></th>";
+    text += "</thead>";
+
+    for (var id in data[key]) {
+      text += "<tr>";
+
+      // // console.log("local_intf:" + data[key][neighbor]['local_intf']);
+      text += "<td>" + id + "</td>";
+      // // console.log("neighbor_intf:" + data[key][neighbor]['neighbor_intf']);
+      text += "<td>" + data[key][id]['port'] + "</td>";
+      // // console.log("neighbor:" + data[key][neighbor]['neighbor']);
+      text += "<td>" + data[key][id]['vlan'] + "</td>";
+
+      text += "</tr>";
+    }
+
+    text += "</table>";
+
+    return text;
+  }
+
+  // ####################################
+  // # replaces content of specified DIV
+  // ####################################
+  function printToDivWithID(id, text) {
+    div = document.getElementById(id);
+    div.innerHTML = text;
+  }
+
+  // ########
+  // # MAIN #
+  // ########
+  var svg = d3.select("svg"),
+    // width = +svg.attr("width");
+    // height = +svg.attr("height");
+    width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+    height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  factor = 0.5
+  d3.select("svg").attr("height", height * factor)
+  d3.select("svg").attr("width", width * factor)
+
+  var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+  var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function (d) { return d.id; }).distance(100).strength(0.001))
+    .force("charge", d3.forceManyBody().strength(-200).distanceMax(500).distanceMin(50))
+    .force("x", d3.forceX(function (d) {
+      if (d.group === "1") {
+        return 5 * (width * factor) / 6
+      } else if (d.group === "2") {
+        return 4 * (width * factor) / 6
+      } else if (d.group === "3") {
+        return 3 * (width * factor) / 6
+      } else if (d.group === "4") {
+        return 2 * (width * factor) / 6
+      } else if (d.group === "5") {
+        return 1 * (width * factor) / 6
+      } else {
+        return 0 * (width * factor) / 6
+      }
+    }).strength(1))
+    .force("y", d3.forceY(height * factor / 2))
+    .force("center", d3.forceCenter((width * factor) / 2, height * factor / 2))
+    .force("collision", d3.forceCollide().radius(35));
+
+  // ######################################
+  // # Read graph.json and draw SVG graph #
+  // ######################################
+  d3.json("static/json/graph.json", function (error, graph) {
+    if (error) throw error;
+
+    var link = svg.append("g")
+      .selectAll("line")
+      .data(graph.links)
+      .enter().append("line")
+      .attr("stroke", function (d) { return color(parseInt(d.value)); })
+      .attr("stroke-width", function (d) { return Math.sqrt(parseInt(d.value)); });
+
+    var node = svg.append("g")
+      .attr("class", "nodes")
+      .selectAll("a")
+      .data(graph.nodes)
+      .enter().append("a")
+      .attr("target", '_blank')
+      .attr("xlink:href", function (d) { return (window.location.href + '?device=' + d.id) });
+
+    node.on("click", function (d, i) {
+      d3.event.preventDefault();
+      d3.event.stopPropagation();
+      OnClickDetails(d.id);
+
+    }
+    );
+
+    node.call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended));
+
+    node.append("image")
+      .attr("xlink:href", function (d) { return ("static/img/group" + d.group + ".png"); })
+      .attr("width", 32)
+      .attr("height", 32)
+      .attr("x", - 16)
+      .attr("y", - 16)
+      .attr("fill", function (d) { return color(d.group); });
+
+    node.append("text")
+      .attr("font-size", "0.8em")
+      .attr("dx", 12)
+      .attr("dy", ".35em")
+      .attr("x", +8)
+      .text(function (d) { return d.id });
+
+    node.append("title")
+      .text(function (d) { return d.id; });
+
+    simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
+
+    simulation.force("link")
+      .links(graph.links);
+
+    function ticked() {
+      link
+        .attr("x1", function (d) { return d.source.x; })
+        .attr("y1", function (d) { return d.source.y; })
+        .attr("x2", function (d) { return d.target.x; })
+        .attr("y2", function (d) { return d.target.y; });
+
+      node
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
+    }
+  });
+
+  function dragstarted(d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  function dragended(d) {
+    if (!d3.event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+</script>

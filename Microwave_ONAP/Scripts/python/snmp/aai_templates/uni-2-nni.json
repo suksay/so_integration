@@ -1,0 +1,10 @@
+{
+    "link-id": "{{link_id}}",
+    "nms-index": "{{nms_index}}",
+    "link-name": "{{link_name}}",
+    "port": "{{port}}",
+    "qinq-link-id": "{{qinq_link_id}}",
+    "vlan-list": "{{vlan_list}}",
+    "status": "{{status}}"
+}
+
