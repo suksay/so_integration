@@ -39,6 +39,7 @@ services:
     volumes:
       - './SO_CONFIG/so-mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d'
       - './SO_CONFIG/so-mariadb/conf.d:/etc/mysql/conf.d'
+      - './Databases_Persistent_Data/so-mariadb:/var/lib/mysql'
     environment:
       - 'MYSQL_ROOT_PASSWORD=password'
     logging:
@@ -56,6 +57,7 @@ services:
     networks:
       - so_network
     volumes:
+      - './SO_CONFIG/ca-certificates:/app/ca-certificates'
       - './SO_CONFIG/so-catalog-db-adapter:/app/config'
     environment:
       - 'APP=so-catalog-db-adapter'
@@ -94,6 +96,7 @@ services:
     networks:
       - so_network
     volumes:
+      - './SO_CONFIG/ca-certificates:/app/ca-certificates'
       - './SO_CONFIG/so-request-db-adapter:/app/config'
     environment:
       - 'APP=so-request-db-adapter'
@@ -135,6 +138,7 @@ services:
       - aai_network
       - cds_network
     volumes:
+      - './SO_CONFIG/ca-certificates:/app/ca-certificates'
       - './SO_CONFIG/so-bpmn-infra:/app/config'
     environment:
       - 'APP=so-bpmn-infra'
@@ -176,6 +180,7 @@ services:
       - so_network
       - aai_network
     volumes:
+      - './SO_CONFIG/ca-certificates:/app/ca-certificates'
       - './SO_CONFIG/so-api-handler-infra:/app/config'
     environment:
       - 'APP=so-api-handler-infra'
@@ -214,6 +219,7 @@ services:
     networks:
       - so_network
     volumes:
+      - './SO_CONFIG/ca-certificates:/app/ca-certificates'
       - './SO_CONFIG/so-so-monitoring:/app/config'
     environment:
       - 'APP=so-so-monitoring'
